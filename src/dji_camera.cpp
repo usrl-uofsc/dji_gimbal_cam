@@ -34,6 +34,13 @@ dji_camera::dji_camera(ros::NodeHandle& nh, image_transport::ImageTransport& ima
 	frameSize = imageWidth * imageHeight * imageChannels / 2;
 }
 
+dji_camera::~dji_camera()
+{
+	// Make sure camera exits properly otherwise the connection will appear occupied
+	while(!manifold_cam_exit())
+		sleep(1);
+}
+
 bool dji_camera::loadCameraInfo()
 {
 	// Create private nodeHandle to load the camera info
@@ -140,7 +147,7 @@ int main(int argc, char** argv)
 
   ros::Rate rate(10);
 
-  while(ros::ok())
+  while(ros::ok() && !manifold_cam_exit())
   {
   	ros::spinOnce();
 
@@ -148,7 +155,7 @@ int main(int argc, char** argv)
   	{
   		ROS_ERROR("Could not retrieve new frame");
   		break;
-  	}  	
+  	}
 
   	rate.sleep();
   }

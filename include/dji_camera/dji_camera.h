@@ -20,7 +20,7 @@
 class dji_camera {
 public:
 	dji_camera(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
-	~dji_camera(){};
+	~dji_camera();
 
 	// Publisher functions
 	bool publishAll();
