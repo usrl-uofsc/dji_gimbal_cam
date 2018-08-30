@@ -36,18 +36,16 @@ private:
 	int is_mono;
 
 	// DJI camera parameters
+	cv_bridge::CvImage rosMat;
 	int imageWidth;
 	int imageHeight;
 	int imageChannels;
 	int frameSize;
 	int mode;
-
-	// Load new frame
-	bool grabFrame();
-	cv_bridge::CvImage rosMat;
-
-	// Set up topics and call Publishers
 	int nCount;
+
+	// Frame grabber function
+	bool grabFrame();
 };
 
 

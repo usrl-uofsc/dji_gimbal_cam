@@ -24,7 +24,7 @@ dji_camera::dji_camera(ros::NodeHandle& nh, image_transport::ImageTransport& ima
 
 	// Set up Publishers
 	imagePub = imageT.advertise("dji_camera/image_raw", 1);
-	cameraInfoPub = nh.advertise<sensor_msgs::CameraInfo>("dji_camera/camera_info", 10);
+	cameraInfoPub = nh.advertise<sensor_msgs::CameraInfo>("dji_camera/dji_camera_info", 10);
 
 	// Initialize variables
 	nCount = 0;
