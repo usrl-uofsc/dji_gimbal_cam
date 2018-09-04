@@ -32,6 +32,7 @@ private:
 
 	// Camera info
 	sensor_msgs::CameraInfo cam_info;
+	std::string camera_frame_id;
 	bool loadCameraInfo();
 	int is_mono;
 
@@ -47,6 +48,5 @@ private:
 	// Frame grabber function
 	bool grabFrame();
 };
-
 
 #endif //DJI_CAMERA_H

@@ -16,7 +16,6 @@ dji_camera::dji_camera(ros::NodeHandle& nh, image_transport::ImageTransport& ima
 		ROS_ERROR("Camera calibration file could not be found");
 
 	// Initialize DJI camera
-	mode = GETBUFFER_MODE | TRANSFER_MODE;
 	int ret = manifold_cam_init(mode);
 
 	if(ret == -1)
@@ -48,12 +47,21 @@ bool dji_camera::loadCameraInfo()
 
 	// Initialize parameters
 	std::string camera_name;
-	std::string camera_info_url;	
+	std::string camera_info_url;
+	int transfer;
 
 	nh_private.param("is_mono", is_mono, 1);
+	nh_private.param("transfer", transfer, 1);
 	nh_private.param("camera_name", camera_name, std::string("camera_dji"));
 	nh_private.param("camera_info_url", camera_info_url,
 		std::string("package://dji_camera/calibration_files/zenmuse_z3.yaml"));
+	nh_private.param("camera_frame_id", camera_frame_id, std::string("dji_camera"));
+
+	// Configure dji camera mode
+	mode = GETBUFFER_MODE;
+
+	if(transfer)
+		mode |= TRANSFER_MODE;
 
 	// Create camera info manager
 	camera_info_manager::CameraInfoManager camInfoMngr(nh_private, camera_name, camera_info_url);
@@ -120,6 +128,7 @@ bool dji_camera::publishAll()
 		// Setup camera info message
 		cam_info.header.stamp = time;
 		cam_info.header.seq = nCount;
+		cam_info.header.frame_id = camera_frame_id;
 
 		// Publish everything
 		imagePub.publish(rosImage);
