@@ -121,7 +121,7 @@ bool dji_camera::publishAll()
 			rosMat.encoding = "bgr8";
 
 		rosMat.header.stamp = time;
-		rosMat.header.frame_id = "image";
+		rosMat.header.frame_id = camera_frame_id;
 
 		rosMat.toImageMsg(rosImage);
 
