@@ -148,7 +148,7 @@ bool dji_camera::publishAll()
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "dji_camera");
+  ros::init(argc, argv, "dji_camera_node");
   ros::NodeHandle nh;
   image_transport::ImageTransport imageT(nh);
 

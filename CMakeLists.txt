@@ -16,6 +16,22 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
+###################################
+## catkin specific configuration ##
+###################################
+## The catkin_package macro generates cmake config files for your package
+## Declare things to be passed to dependent projects
+## INCLUDE_DIRS: uncomment this if your package contains header files
+## LIBRARIES: libraries you create in this project that dependent projects also need
+## CATKIN_DEPENDS: catkin_packages dependent projects also need
+## DEPENDS: system dependencies of this project that dependent projects also need
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES dji_camera
+  CATKIN_DEPENDS camera_info_manager cv_bridge image_transport roscpp sensor_msgs std_msgs
+  DEPENDS system_lib
+)
+
 ###########
 ## Build ##
 ###########
@@ -29,11 +45,11 @@ include_directories(
 
 link_directories(/usr/lib /usr/local/lib usr/lib/arm-linux-gnueabihf)
 
-add_executable(dji_camera
-	src/dji_camera.cpp
-	)
+add_executable(dji_camera_node
+  src/dji_camera.cpp
+  )
 
-target_link_libraries(dji_camera
-	dcam
-	${catkin_LIBRARIES}
-	)
+target_link_libraries(dji_camera_node
+  dcam
+  ${catkin_LIBRARIES}
+  )
