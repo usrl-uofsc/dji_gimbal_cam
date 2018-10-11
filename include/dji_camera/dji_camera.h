@@ -34,7 +34,7 @@ private:
 	sensor_msgs::CameraInfo cam_info;
 	std::string camera_frame_id;
 	bool loadCameraInfo();
-	int is_mono;
+	bool is_mono;
 
 	// DJI camera parameters
 	cv_bridge::CvImage rosMat;
