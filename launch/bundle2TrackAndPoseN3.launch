@@ -12,8 +12,8 @@
 	<arg name="marker_size" default="11.6" />
 	<arg name="max_new_marker_error" default="0.08" />
 	<arg name="max_track_error" default="0.2" />
-	<arg name="cam_image_topic" default="/dji_camera/image_raw" />
-	<arg name="cam_info_topic" default="/dji_camera/camera_info" />
+	<arg name="cam_image_topic" default="/jetyak_uav_vision/dji_camera/image_raw" />
+	<arg name="cam_info_topic" default="/jetyak_uav_vision/dji_camera/camera_info" />
 	<arg name="output_frame" default="/dji_camera" />
 	<arg name="bundle_files" default="$(find jetyak_uav_utils)/res/twotagbundle.xml"/>
 
