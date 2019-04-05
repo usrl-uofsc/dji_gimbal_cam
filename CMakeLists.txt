@@ -14,6 +14,11 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  dji_sdk
+  geometry_msgs
+  message_generation
+  std_srvs
+
 )
 
 ###################################
@@ -27,8 +32,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES dji_camera
-  CATKIN_DEPENDS camera_info_manager cv_bridge image_transport roscpp sensor_msgs std_msgs
+  LIBRARIES dji_camera dji_gimbal_control
+  CATKIN_DEPENDS camera_info_manager cv_bridge image_transport roscpp sensor_msgs std_msgs dji_sdk geometry_msgs roscpp message_runtime
   DEPENDS system_lib
 )
 
@@ -43,13 +48,19 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-link_directories(/usr/lib /usr/local/lib usr/lib/arm-linux-gnueabihf)
+link_directories(/usr/lib /usr/local/lib usr/lib/arm-linux-gnueabihf libs)
 
 add_executable(dji_camera_node
   src/dji_camera.cpp
-  )
+)
+add_executable(dji_gimbal_control_node
+	src/dji_gimbal_controller.cpp
+)
+
+add_dependencies(dji_gimbal_control_node ${catkin_EXPORTED_TARGETS} )
 
 target_link_libraries(dji_camera_node
   dcam
+  ${DJIOSDK_LIBRARIES}
   ${catkin_LIBRARIES}
-  )
+)
