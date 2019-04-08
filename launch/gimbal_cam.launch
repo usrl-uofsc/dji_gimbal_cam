@@ -1,0 +1,9 @@
+<launch>
+	<rosparam command="load" file="$(find dji_camera)/cfg/config.yaml"/>
+
+	<!-- Gimbal control Node -->
+	<node pkg="dji_camera" type="dji_gimbal_node" name="dji_gimbal" output="screen"/>
+
+	<!-- Camera Node -->
+	<node pkg="dji_camera" type="dji_camera_node" name="dji_camera" output="screen"/>
+</launch>

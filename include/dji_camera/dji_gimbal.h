@@ -45,7 +45,7 @@ private:
 	void gimbalAngleCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
 	void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
 	void cameraInfoCallback(const sensor_msgs::CameraInfo& msg);
-	void pointCallback(const ar_track_alvar_msgs::AlvarMarkers& msg);
+	void pointCallback(const geometry_msgs::Vector3::ConstPtr& msg);
 	
 	// Service Callbacks
 	bool facedownCallback(std_srvs::Trigger::Request &req,std_srvs::Trigger::Response &res);	
@@ -61,7 +61,7 @@ private:
 	double fx, fy;
 	double lastX,lastY;
 	double velT, Kp,Kd;
-	double pointX, pointY;
+	double posX, posY;
 
 	bool trackPoint;
 	std::string cameraInfoTopic;

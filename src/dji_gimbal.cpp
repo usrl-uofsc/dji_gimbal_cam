@@ -1,4 +1,4 @@
-#include "dji_camera/dji_gimbal_controller.h"
+#include "dji_camera/dji_gimbal.h"
 
 #include <unistd.h>
 
@@ -13,7 +13,7 @@ dji_gimbal_controller::dji_gimbal_controller(ros::NodeHandle& nh)
 	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 10, &dji_gimbal_controller::gimbalAngleCallback, this);
 	joySub = nh.subscribe("joy", 10, &dji_gimbal_controller::joyCallback, this);
 	cameraInfoSub = nh.subscribe(cameraInfoTopic, 10, &dji_gimbal_controller::cameraInfoCallback, this);
-	ointSub = nh.subscribe(pointTopic, 10, &dji_gimbal_controller::pointCallback, this);
+	pointSub = nh.subscribe(pointTopic, 10, &dji_gimbal_controller::pointCallback, this);
 
 	// Setup Publishers
 	gimbalSpeedPub = nh.advertise<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_speed_cmd", 10);
@@ -28,20 +28,20 @@ dji_gimbal_controller::dji_gimbal_controller(ros::NodeHandle& nh)
 void dji_gimbal_controller::initializeParam()
 {
 	// Create private nodeHandle to read the launch file
-	ros::NodeHandle nh_private("~");
+	ros::NodeHandle nh_local("");
 
 	// Load values from launch file
-	nh_private.param("track_point", trackPoint, false);
-	nh_private.param("camera_info_topic", cameraInfoTopic, std::string("dji_camera/camera_info"));
-	nh_private.param("point_topic", pointTopic, std::string("ar_pose_marker"));
-	nh_private.param("yaw_axis", yawAxis, 0);
-	nh_private.param("pitch_axis", pitchAxis, 4);
-	nh_private.param("roll_axis", rollAxis, 3);
-	nh_private.param("reset_angle_btn", resetButton, 0);
-	nh_private.param("face_down_btn", faceDownButton, 2);
-	nh_private.param("toggle_track_btn", toggleButton, 3);
-	nh_private.param("Kp", Kp, .002);
-	nh_private.param("Kd", Kd, 0.0);
+	nh_local.param("track_point", trackPoint, false);
+	nh_local.param("camera_info_topic", cameraInfoTopic, std::string("/dji_sdk/camera_info"));
+	nh_local.param("track_point_topic", pointTopic, std::string("track_point"));
+	nh_local.param("yaw_axis", yawAxis, 0);
+	nh_local.param("pitch_axis", pitchAxis, 4);
+	nh_local.param("roll_axis", rollAxis, 3);
+	nh_local.param("reset_angle_btn", resetButton, 0);
+	nh_local.param("face_down_btn", faceDownButton, 2);
+	nh_local.param("toggle_track_btn", toggleButton, 3);
+	nh_local.param("Kp", Kp, 0.0);
+	nh_local.param("Kd", Kd, 0.0);
 
 	// Initialize speed command
 	speedCmd.vector.x = 0;
@@ -141,15 +141,8 @@ void dji_gimbal_controller::cameraInfoCallback(const sensor_msgs::CameraInfo& ms
 
 void dji_gimbal_controller::pointCallback(const geometry_msgs::Vector3::ConstPtr& msg)
 {
-	
-	double pointX = msg.markers[0].pose.pose.position.x;
-	double pointY = msg.markers[0].pose.pose.position.y;
-	double pointZ = msg.markers[0].pose.pose.position.z;
-
-	// Get point pose in image coordinates
-	this.posX = fx*(pointX/pointZ);
-	this.posY = fy*(pointY/pointZ);
-
+	posX = fx*(msg->x/msg->z);
+	posY = fy*(msg->y/msg->z);
 }
 
 bool dji_gimbal_controller::facedownCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)

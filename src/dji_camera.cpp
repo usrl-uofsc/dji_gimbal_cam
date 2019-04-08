@@ -43,19 +43,19 @@ dji_camera::~dji_camera()
 bool dji_camera::loadCameraInfo()
 {
 	// Create private nodeHandle to load the camera info
-	ros::NodeHandle nh_private("~");
+	ros::NodeHandle nh_local("");
 
 	// Initialize parameters
 	std::string camera_name;
 	std::string camera_info_url;
 	bool transfer;
 
-	nh_private.param("is_mono", is_mono, true);
-	nh_private.param("transfer", transfer, true);
-	nh_private.param("camera_name", camera_name, std::string("camera_dji"));
-	nh_private.param("camera_info_url", camera_info_url,
+	nh_local.param("is_mono", is_mono, true);
+	nh_local.param("transfer", transfer, true);
+	nh_local.param("camera_name", camera_name, std::string("camera_dji"));
+	nh_local.param("camera_info_url", camera_info_url,
 		std::string("package://dji_camera/calibration_files/zenmuse_x3.yaml"));
-	nh_private.param("camera_frame_id", camera_frame_id, std::string("dji_camera"));
+	nh_local.param("camera_frame_id", camera_frame_id, std::string("dji_camera"));
 
 	// Configure dji camera mode
 	mode = GETBUFFER_MODE;
@@ -64,7 +64,7 @@ bool dji_camera::loadCameraInfo()
 		mode |= TRANSFER_MODE;
 
 	// Create camera info manager
-	camera_info_manager::CameraInfoManager camInfoMngr(nh_private, camera_name, camera_info_url);
+	camera_info_manager::CameraInfoManager camInfoMngr(nh_local, camera_name, camera_info_url);
 
 	if (camInfoMngr.loadCameraInfo(camera_info_url))
 	{

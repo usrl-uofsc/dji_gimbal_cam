@@ -1,9 +1,0 @@
-<launch>
-	<node pkg="dji_camera" type="dji_camera_node" name="dji_camera" output="screen">
-		<param name="camera_info_url" value="package://dji_camera/calibration_files/zenmuse_z3.yaml"/>
-		<param name="camera_name" value="zenmuseZ3"/>
-		<param name="camera_frame_id" value="dji_camera"/>
-		<param name="is_mono" type="bool" value="true"/>
-		<param name="transfer" type="bool" value="false"/>
-	</node>
-</launch>
