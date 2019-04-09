@@ -1,0 +1,7 @@
+<launch>
+	<!-- Gimbal control Node -->
+	<node pkg="dji_gimbal_cam" type="dji_gimbal_node" name="dji_gimbal" output="screen"/>
+
+	<!-- Camera Node -->
+	<node pkg="dji_gimbal_cam" type="dji_camera_node" name="dji_camera" output="screen"/>
+</launch>

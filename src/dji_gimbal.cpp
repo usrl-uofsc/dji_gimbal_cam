@@ -1,31 +1,56 @@
-#include "dji_camera/dji_gimbal.h"
+/**
+MIT License
+
+Copyright (c) 2019 Michail Kalaitzakis (Unmanned Systems and Robotics Lab, 
+University of South Carolina, USA)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#include "dji_gimbal_cam/dji_gimbal.h"
 
 #include <unistd.h>
 
 #include <iostream>
 
-dji_gimbal_controller::dji_gimbal_controller(ros::NodeHandle& nh)
+dji_gimbal::dji_gimbal(ros::NodeHandle& nh)
 {
 	// Configure the gimbal control parameters
 	initializeParam();
 
 	// Setup Subscribers
-	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 10, &dji_gimbal_controller::gimbalAngleCallback, this);
-	joySub = nh.subscribe("joy", 10, &dji_gimbal_controller::joyCallback, this);
-	cameraInfoSub = nh.subscribe(cameraInfoTopic, 10, &dji_gimbal_controller::cameraInfoCallback, this);
-	pointSub = nh.subscribe(pointTopic, 10, &dji_gimbal_controller::pointCallback, this);
+	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 10, &dji_gimbal::gimbalAngleCallback, this);
+	joySub = nh.subscribe("joy", 10, &dji_gimbal::joyCallback, this);
+	cameraInfoSub = nh.subscribe(cameraInfoTopic, 10, &dji_gimbal::cameraInfoCallback, this);
+	pointSub = nh.subscribe(pointTopic, 10, &dji_gimbal::pointCallback, this);
 
 	// Setup Publishers
 	gimbalSpeedPub = nh.advertise<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_speed_cmd", 10);
 	gimbalAnglePub = nh.advertise<dji_sdk::Gimbal>("/dji_sdk/gimbal_angle_cmd", 10);
 
 	// Setup Services
-	facedownServ = nh.advertiseService("facedown", &dji_gimbal_controller::facedownCallback, this);
-	faceupServ = nh.advertiseService("faceup", &dji_gimbal_controller::faceupCallback, this);
-	setTrackingServ = nh.advertiseService("setGimbalTracking", &dji_gimbal_controller::setTrackingCallback, this);
+	facedownServ = nh.advertiseService("facedown", &dji_gimbal::facedownCallback, this);
+	faceupServ = nh.advertiseService("faceup", &dji_gimbal::faceupCallback, this);
+	setTrackingServ = nh.advertiseService("setGimbalTracking", &dji_gimbal::setTrackingCallback, this);
 }
 
-void dji_gimbal_controller::initializeParam()
+void dji_gimbal::initializeParam()
 {
 	// Create private nodeHandle to read the launch file
 	ros::NodeHandle nh_local("");
@@ -53,7 +78,7 @@ void dji_gimbal_controller::initializeParam()
 	lastX=lastY=0;
 }
 
-void dji_gimbal_controller::publishGimbalCmd()
+void dji_gimbal::publishGimbalCmd()
 {
 	if (trackPoint)
 	{
@@ -76,10 +101,12 @@ void dji_gimbal_controller::publishGimbalCmd()
 		speedCmd.vector.z = 0;
 	}
 	else
+	{
 		gimbalSpeedPub.publish(speedCmd);
+	}
 }
 
-void dji_gimbal_controller::resetGimbalAngle()
+void dji_gimbal::resetGimbalAngle()
 {
 	// Prepare the reset command
 	dji_sdk::Gimbal angleCmd;
@@ -95,7 +122,7 @@ void dji_gimbal_controller::resetGimbalAngle()
 	sleep(2);
 }
 
-void dji_gimbal_controller::faceDownwards()
+void dji_gimbal::faceDownwards()
 {
 	// Prepare the angle command
 	dji_sdk::Gimbal angleCmd;
@@ -110,11 +137,11 @@ void dji_gimbal_controller::faceDownwards()
 }
 
 // Callbacks
-void dji_gimbal_controller::gimbalAngleCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg) {
+void dji_gimbal::gimbalAngleCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg) {
 	gimbalAngle = *msg;
 }
 
-void dji_gimbal_controller::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
+void dji_gimbal::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
 {
 	// Toggle track flag
 	if (msg->buttons[toggleButton] == 1)
@@ -132,34 +159,34 @@ void dji_gimbal_controller::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
 	}
 }
 
-void dji_gimbal_controller::cameraInfoCallback(const sensor_msgs::CameraInfo& msg)
+void dji_gimbal::cameraInfoCallback(const sensor_msgs::CameraInfo& msg)
 {
 	// Get the focal length of the camera
 	fx = msg.K[0];
 	fy = msg.K[4];
 }
 
-void dji_gimbal_controller::pointCallback(const geometry_msgs::Vector3::ConstPtr& msg)
+void dji_gimbal::pointCallback(const geometry_msgs::Vector3::ConstPtr& msg)
 {
 	posX = fx*(msg->x/msg->z);
 	posY = fy*(msg->y/msg->z);
 }
 
-bool dji_gimbal_controller::facedownCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+bool dji_gimbal::facedownCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
 {
 	faceDownwards();
 	res.success = true;
 	return true;
 }
 
-bool dji_gimbal_controller::faceupCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
+bool dji_gimbal::faceupCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
 {
 	resetGimbalAngle();
 	res.success = true;
 	return true;
 }
 
-bool dji_gimbal_controller::setTrackingCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
+bool dji_gimbal::setTrackingCallback(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &res)
 {
 	trackPoint = req.data;
 	res.success = true;
@@ -175,7 +202,7 @@ int main(int argc, char** argv)
 	ros::init(argc, argv, "dji_gimbal_control_node");
 	ros::NodeHandle nh;
 
-	dji_gimbal_controller gimbalControl(nh);
+	dji_gimbal gimbalControl(nh);
 
 	ros::Rate rate(30);
 

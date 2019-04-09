@@ -1,5 +1,30 @@
-#ifndef DJI_GIMBAL_CONTROLLER_H
-#define DJI_GIMBAL_CONTROLLER_H
+/**
+MIT License
+
+Copyright (c) 2019 Michail Kalaitzakis (Unmanned Systems and Robotics Lab, 
+University of South Carolina, USA)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+#ifndef DJI_GIMBAL_H
+#define DJI_GIMBAL_H
 
 // DJI SDK includes
 #include <dji_sdk/Gimbal.h>
@@ -17,10 +42,10 @@
 #define DEG2RAD(DEG) ((DEG) * ((C_PI) / (180.0)))
 #define RAD2DEG(RAD) ((RAD) * (180.0) / (C_PI))
 
-class dji_gimbal_controller {
+class dji_gimbal {
 public:
-	dji_gimbal_controller(ros::NodeHandle& nh);
-	~dji_gimbal_controller(){};
+	dji_gimbal(ros::NodeHandle& nh);
+	~dji_gimbal(){};
 
 	// Publish commands
 	void publishGimbalCmd();
@@ -71,4 +96,4 @@ private:
 	geometry_msgs::Vector3Stamped speedCmd;
 };
 
-#endif //DJI_GIMBAL_CONTROL_H
+#endif //DJI_GIMBAL_H

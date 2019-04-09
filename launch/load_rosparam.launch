@@ -1,0 +1,7 @@
+<launch>
+	<!-- Load ROS parameters from a file to the local namespace -->
+	<rosparam command="load" file="$(find dji_gimbal_cam)/cfg/default_config.yaml"/>
+
+	<!-- Run dji_camera and dji_gimbal -->
+	<include file="$(find dji_gimbal_cam)/launch/default.launch" />
+</launch>

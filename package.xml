@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>dji_camera</name>
-  <version>0.0.0</version>
-  <description>The dji_camera package</description>
+  <name>dji_gimbal_cam</name>
+  <version>1.0.0</version>
+  <description>dji_gimbal_cam provides a higher level interface to interact with the dji gimbaled cameras. dji_camera provides images and camera info from the image sensor. dji_gimbal provides control for the gimbal and a behavior for tracking a 3d point in the frame of the camera.</description>
 
-  <maintainer email="michailk@todo.todo">Michail Kalaitzakis</maintainer>
+  <author email="michailk@email.sc.edu">Michail Kalaitzakis</author>
+  <author email="bscain@email.sc.edu">Brennan Cain</author>
 
-  <license>TODO</license>
+  <maintainer email="michailk@email.sc.edu">Michail Kalaitzakis</maintainer>
+  <maintainer email="bscain@email.sc.edu">Brennan Cain</maintainer>
+
+  <license>MIT</license>
 
 
   <build_depend>camera_info_manager</build_depend>

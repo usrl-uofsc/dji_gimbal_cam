@@ -1,6 +1,7 @@
-track_tag: true
-camera_info_topic: /jetyak_uav_vision/dji_camera/camera_info
-track_point_topic: /jetyak_uav_vision/ar_marker_v3
+# dji_gimbal config
+track_point: true
+camera_info_topic: /dji_camera/camera_info
+track_point_topic: /ar_marker
 
 yaw_axis: 0
 pitch_axis: 4
@@ -12,7 +13,8 @@ toggle_track_btn: 3
 Kp: .002
 Kd: 0.0005
 
-camera_info_url: package://dji_camera/cfg/zenmuse_z3.yaml
+# dji_camera config
+camera_info_url: package://dji_gimbal_cam/cfg/zenmuse_z3.yaml
 camera_name: zenmuseZ3
 camera_frame_id: dji_camera
 
