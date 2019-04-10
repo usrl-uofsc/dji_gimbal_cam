@@ -84,7 +84,6 @@ private:
 
 	// Data
 	double fx, fy;
-	double lastX,lastY;
 	double velT, Kp,Kd;
 	double posX, posY;
 

@@ -33,3 +33,6 @@
 
 # Temporary files
 *~
+
+# VS Code
+.vscode

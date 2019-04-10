@@ -11,7 +11,6 @@ face_down_btn: 2
 toggle_track_btn: 3
 
 Kp: .002
-Kd: 0.0005
 
 # dji_camera config
 camera_info_url: package://dji_gimbal_cam/cfg/zenmuse_z3.yaml

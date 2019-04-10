@@ -66,7 +66,6 @@ void dji_gimbal::initializeParam()
 	nh_local.param("face_down_btn", faceDownButton, 2);
 	nh_local.param("toggle_track_btn", toggleButton, 3);
 	nh_local.param("Kp", Kp, 0.0);
-	nh_local.param("Kd", Kd, 0.0);
 
 	// Initialize speed command
 	speedCmd.vector.x = 0;
@@ -75,7 +74,6 @@ void dji_gimbal::initializeParam()
 
 	// Initialize flags
 	velT = 0.75;
-	lastX=lastY=0;
 }
 
 void dji_gimbal::publishGimbalCmd()
@@ -83,14 +81,16 @@ void dji_gimbal::publishGimbalCmd()
 	if (trackPoint)
 	{
 		speedCmd.vector.x = 0;
-		//corrections in x,y
-		double cx,cy;
-		cx = posX * Kp - (lastX-posX)*Kd;
-		cy = -posY * Kp+ (lastY-posY)*Kd;
-		//crop if outside range
-		cx = cx>velT ? velT : (cx<-velT ? -velT : cx);
-		cy = cy>velT ? velT : (cy<-velT ? -velT : cy);
-		//add to vector
+		
+		// Corrections in x,y
+		double cx =  posX * Kp;
+		double cy = -posY * Kp;
+		
+		// Crop if outside range
+		cx = cx > velT ? velT : (cx < -velT ? -velT : cx);
+		cy = cy > velT ? velT : (cy < -velT ? -velT : cy);
+
+		// Add to vector
 		speedCmd.vector.y = cy;
 		speedCmd.vector.z = cx;
 
@@ -101,9 +101,7 @@ void dji_gimbal::publishGimbalCmd()
 		speedCmd.vector.z = 0;
 	}
 	else
-	{
 		gimbalSpeedPub.publish(speedCmd);
-	}
 }
 
 void dji_gimbal::resetGimbalAngle()

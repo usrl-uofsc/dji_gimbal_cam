@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-/* ROS node to read camera feed from a DJI camera and publish it as a ROS topic
+/*
+*  ROS node to read camera feed from a DJI camera and publish it as a ROS topic
 *  Needs a DJI Manifold and DJI compatible camera
 *  Tested on DJI Matrice 100 with Zenmuse Z3
 */
