@@ -73,12 +73,13 @@ void dji_gimbal::initializeParam()
 	speedCmd.vector.z = 0;
 
 	// Initialize flags
+	pointAvailable = false;
 	velT = 0.75;
 }
 
 void dji_gimbal::publishGimbalCmd()
 {
-	if (trackPoint)
+	if (trackPoint && pointAvailable)
 	{
 		speedCmd.vector.x = 0;
 		
@@ -99,6 +100,8 @@ void dji_gimbal::publishGimbalCmd()
 		// Reset Commands to zero
 		speedCmd.vector.y = 0;
 		speedCmd.vector.z = 0;
+
+		pointAvailable = false;
 	}
 	else
 		gimbalSpeedPub.publish(speedCmd);
@@ -168,6 +171,7 @@ void dji_gimbal::pointCallback(const geometry_msgs::Vector3::ConstPtr& msg)
 {
 	posX = fx*(msg->x/msg->z);
 	posY = fy*(msg->y/msg->z);
+	pointAvailable = true;
 }
 
 bool dji_gimbal::facedownCallback(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res)
@@ -202,7 +206,7 @@ int main(int argc, char** argv)
 
 	dji_gimbal gimbalControl(nh);
 
-	ros::Rate rate(30);
+	ros::Rate rate(10);
 
 	while(ros::ok())
 	{

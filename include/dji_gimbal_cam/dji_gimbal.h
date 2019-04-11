@@ -88,6 +88,7 @@ private:
 	double posX, posY;
 
 	bool trackPoint;
+	bool pointAvailable;
 	std::string cameraInfoTopic;
 	std::string pointTopic;
 	int yawAxis, pitchAxis, rollAxis, resetButton, faceDownButton, toggleButton;

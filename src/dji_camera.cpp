@@ -179,7 +179,7 @@ int main(int argc, char** argv)
 
   dji_camera manifoldCamera(nh, imageT);
 
-  ros::Rate rate(30);
+  ros::Rate rate(20);
 
   while(ros::ok() && !manifold_cam_exit())
   {
