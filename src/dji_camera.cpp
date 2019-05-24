@@ -178,9 +178,7 @@ int main(int argc, char** argv)
   image_transport::ImageTransport imageT(nh);
 
   dji_camera manifoldCamera(nh, imageT);
-
-  ros::Rate rate(20);
-
+  ros::Rate r = ros::Rate(15);
   while(ros::ok() && !manifold_cam_exit())
   {
   	ros::spinOnce();
@@ -190,8 +188,7 @@ int main(int argc, char** argv)
   		ROS_ERROR("Could not retrieve new frame");
   		break;
   	}
-
-  	rate.sleep();
+	r.sleep();
   }
 
   return 0;

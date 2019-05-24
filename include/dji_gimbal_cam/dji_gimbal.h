@@ -86,6 +86,9 @@ private:
 	double fx, fy;
 	double velT, Kp,Kd;
 	double posX, posY;
+	double lastT=0;
+	double lastX=0,lastY=0;
+	double lastVX=0,lastVY=0;
 
 	bool trackPoint;
 	bool pointAvailable;
