@@ -1,0 +1,20 @@
+image_width: 640
+image_height: 360
+camera_name: zenmuseZ3
+camera_matrix:
+  rows: 3
+  cols: 3
+  data: [440.670898, 0.000000, 322.490417, 0.000000, 440.493488, 187.317466, 0.000000, 0.000000, 1.000000]
+distortion_model: plumb_bob
+distortion_coefficients:
+  rows: 1
+  cols: 5
+  data: [0.068015, -0.093313, 0.002962, -0.000022, 0.000000]
+rectification_matrix:
+  rows: 3
+  cols: 3
+  data: [1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000]
+projection_matrix:
+  rows: 3
+  cols: 4
+  data: [440.222656, 0.000000, 322.097067, 0.000000, 0.000000, 445.045898, 187.583060, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000]

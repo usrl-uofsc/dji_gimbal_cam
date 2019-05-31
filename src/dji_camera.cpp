@@ -123,7 +123,7 @@ bool dji_camera::grabFrame()
 		// If coloured image is selected
 		else
 			cv::cvtColor(frameYcbCr, frameBGRGray, CV_YUV2BGR_NV12);
-
+		//cv::resize(frameBGRGray,frameBGRGray,cv::Size(),.5,.5);
 		rosMat.image = frameBGRGray;
 	}
 	return true;
@@ -131,6 +131,7 @@ bool dji_camera::grabFrame()
 
 bool dji_camera::publishAll()
 {
+
 	// Check if new frame was captured
 	if(grabFrame())
 	{
@@ -178,7 +179,7 @@ int main(int argc, char** argv)
   image_transport::ImageTransport imageT(nh);
 
   dji_camera manifoldCamera(nh, imageT);
-  ros::Rate r = ros::Rate(15);
+  ros::Rate r = ros::Rate(30);
   while(ros::ok() && !manifold_cam_exit())
   {
   	ros::spinOnce();
