@@ -68,6 +68,7 @@ void dji_gimbal::initializeParam()
 	nh_local.param("Kp", Kp, 0.0);
 	nh_local.param("Kd", Kd, 0.0);
 	nh_local.param("velLimit", velT, 0.75);
+	
 	// Initialize speed command
 	speedCmd.vector.x = 0;
 	speedCmd.vector.y = 0;
@@ -75,7 +76,6 @@ void dji_gimbal::initializeParam()
 
 	// Initialize flags
 	pointAvailable = false;
-
 }
 
 void dji_gimbal::publishGimbalCmd()
@@ -85,8 +85,8 @@ void dji_gimbal::publishGimbalCmd()
 		speedCmd.vector.x = 0;
 		
 		// Corrections in x,y
-		double cx =  posX * Kp+lastVX*Kd;
-		double cy = -posY * Kp-lastVY*Kd;
+		double cx =  posX * Kp + lastVX * Kd;
+		double cy = -posY * Kp - lastVY * Kd;
 		
 		// Crop if outside range
 		cx = cx > velT ? velT : (cx < -velT ? -velT : cx);
@@ -170,17 +170,22 @@ void dji_gimbal::cameraInfoCallback(const sensor_msgs::CameraInfo& msg)
 
 void dji_gimbal::pointCallback(const geometry_msgs::Vector3::ConstPtr& msg)
 {
-	posX = fx*(msg->x/msg->z);
-	posY = fy*(msg->y/msg->z);
-	if(lastT!=0) {
-		double vx = (posX-lastX)/(ros::Time::now().toSec()-lastT);
-		double vy = (posX-lastX)/(ros::Time::now().toSec()-lastT);
-		lastVX=.1*vx+.9*lastVX;
-		lastVY=.1*vy+.8*lastVY;
+	posX = fx * (msg->x / msg->z);
+	posY = fy * (msg->y / msg->z);
+	
+	if(lastT != 0)
+	{
+		double vx = (posX - lastX) / (ros::Time::now().toSec() - lastT);
+		double vy = (posY - lastY) / (ros::Time::now().toSec() - lastT);
+		
+		lastVX = .25 * vx + .75 * lastVX;
+		lastVY = .25 * vy + .75 * lastVY;
 	}
-	lastX=posX;
-	lastY=posY;
+	
+	lastX = posX;
+	lastY = posY;
 	lastT = ros::Time::now().toSec();
+	
 	pointAvailable = true;
 }
 
