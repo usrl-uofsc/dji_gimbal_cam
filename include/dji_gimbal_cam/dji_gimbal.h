@@ -56,6 +56,7 @@ private:
 	ros::Subscriber joySub;
 	ros::Subscriber cameraInfoSub;
 	ros::Subscriber pointSub;
+	ros::Subscriber gimbalAngleCMDSub;
 
 	// Publishers
 	ros::Publisher gimbalSpeedPub;
@@ -80,20 +81,24 @@ private:
 	// Functions
 	void initializeParam();
 	void resetGimbalAngle();
+	void setGimbalAngle(double roll, double pitch, double yaw);
 	void faceDownwards();
 
 	// Data
 	double fx, fy;
-	double velT, Kp,Kd;
+	double velT, Kp, Kd;
 	double posX, posY;
-	double lastT=0;
-	double lastX=0,lastY=0;
-	double lastVX=0,lastVY=0;
+	double rollCMD, pitchCMD, yawCMD;
+	double lastT = 0;
+	double lastX = 0, lastY = 0;
+	double lastVX = 0, lastVY = 0;
 
 	bool trackPoint;
 	bool pointAvailable;
+	bool angleAvailable;
 	std::string cameraInfoTopic;
 	std::string pointTopic;
+	std::string gimbalCMDTopic;
 	int yawAxis, pitchAxis, rollAxis, resetButton, faceDownButton, toggleButton;
 	geometry_msgs::Vector3Stamped gimbalAngle;
 	geometry_msgs::Vector3Stamped speedCmd;
