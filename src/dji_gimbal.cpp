@@ -110,7 +110,11 @@ void dji_gimbal::publishGimbalCmd()
 			pointAvailable = false;
 		}
 		else if (angleAvailable)
+		{
 			setGimbalAngle(rollCMD, pitchCMD, yawCMD);
+			
+			angleAvailable = false;
+		}
 		else
 			gimbalSpeedPub.publish(speedCmd);
 	}
@@ -160,6 +164,8 @@ void dji_gimbal::gimbalAngleCMDCallback(const geometry_msgs::Vector3::ConstPtr& 
 	rollCMD = msg->x;
 	pitchCMD = msg->y;
 	yawCMD = msg->z;
+	
+	angleAvailable = true;
 }
 
 void dji_gimbal::joyCallback(const sensor_msgs::Joy::ConstPtr& msg)
