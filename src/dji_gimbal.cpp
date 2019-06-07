@@ -35,11 +35,11 @@ dji_gimbal::dji_gimbal(ros::NodeHandle& nh)
 	initializeParam();
 
 	// Setup Subscribers
-	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 10, &dji_gimbal::gimbalAngleCallback, this);
-	joySub = nh.subscribe("joy", 10, &dji_gimbal::joyCallback, this);
-	cameraInfoSub = nh.subscribe(cameraInfoTopic, 10, &dji_gimbal::cameraInfoCallback, this);
-	pointSub = nh.subscribe(pointTopic, 10, &dji_gimbal::pointCallback, this);
-	gimbalAngleCMDSub = nh.sudscribe(gimbalCmdTopic, 10, &dji_gimbal::gimbalAngleCMDCallback, this);
+	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 1, &dji_gimbal::gimbalAngleCallback, this);
+	joySub = nh.subscribe("joy", 1, &dji_gimbal::joyCallback, this);
+	cameraInfoSub = nh.subscribe(cameraInfoTopic, 1, &dji_gimbal::cameraInfoCallback, this);
+	pointSub = nh.subscribe(pointTopic, 1, &dji_gimbal::pointCallback, this);
+	gimbalAngleCMDSub = nh.sudscribe(gimbalCmdTopic, 1, &dji_gimbal::gimbalAngleCMDCallback, this);
 
 	// Setup Publishers
 	gimbalSpeedPub = nh.advertise<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_speed_cmd", 10);
@@ -107,17 +107,15 @@ void dji_gimbal::publishGimbalCmd()
 			speedCmd.vector.y = 0;
 			speedCmd.vector.z = 0;
 
-			pointAvailable = false;
+			
 		}
 		else if (angleAvailable)
-		{
 			setGimbalAngle(rollCMD, pitchCMD, yawCMD);
-			
-			angleAvailable = false;
-		}
 		else
 			gimbalSpeedPub.publish(speedCmd);
 	}
+	pointAvailable = false;
+	angleAvailable = false;
 }
 
 void dji_gimbal::setGimbalAngle(double roll, double pitch, double yaw)
