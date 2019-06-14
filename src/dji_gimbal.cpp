@@ -35,11 +35,11 @@ dji_gimbal::dji_gimbal(ros::NodeHandle& nh)
 	initializeParam();
 
 	// Setup Subscribers
-	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 10, &dji_gimbal::gimbalAngleCallback, this);
-	joySub = nh.subscribe("joy", 10, &dji_gimbal::joyCallback, this);
-	cameraInfoSub = nh.subscribe(cameraInfoTopic, 10, &dji_gimbal::cameraInfoCallback, this);
-	pointSub = nh.subscribe(pointTopic, 10, &dji_gimbal::pointCallback, this);
-	gimbalAngleCMDSub = nh.sudscribe(gimbalCmdTopic, 10, &dji_gimbal::gimbalAngleCMDCallback, this);
+	gimbalAngleSub = nh.subscribe<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_angle", 1, &dji_gimbal::gimbalAngleCallback, this);
+	joySub = nh.subscribe("joy", 1, &dji_gimbal::joyCallback, this);
+	cameraInfoSub = nh.subscribe(cameraInfoTopic, 1, &dji_gimbal::cameraInfoCallback, this);
+	pointSub = nh.subscribe(pointTopic, 1, &dji_gimbal::pointCallback, this);
+	gimbalAngleCMDSub = nh.subscribe(gimbalCmdTopic, 1, &dji_gimbal::gimbalAngleCMDCallback, this);
 
 	// Setup Publishers
 	gimbalSpeedPub = nh.advertise<geometry_msgs::Vector3Stamped>("/dji_sdk/gimbal_speed_cmd", 10);
@@ -60,7 +60,7 @@ void dji_gimbal::initializeParam()
 	nh_local.param("track_point", trackPoint, false);
 	nh_local.param("camera_info_topic", cameraInfoTopic, std::string("/dji_sdk/camera_info"));
 	nh_local.param("track_point_topic", pointTopic, std::string("track_point"));
-	nh_local.param("gimbal_cmd_topic", gimbalCmdTopic, std:string("gimbal_cmd"));
+	nh_local.param("gimbal_cmd_topic", gimbalCmdTopic, std::string("gimbal_cmd"));
 	nh_local.param("yaw_axis", yawAxis, 0);
 	nh_local.param("pitch_axis", pitchAxis, 4);
 	nh_local.param("roll_axis", rollAxis, 3);
@@ -107,17 +107,35 @@ void dji_gimbal::publishGimbalCmd()
 			speedCmd.vector.y = 0;
 			speedCmd.vector.z = 0;
 
-			pointAvailable = false;
+
 		}
 		else if (angleAvailable)
 		{
-			setGimbalAngle(rollCMD, pitchCMD, yawCMD);
-			
-			angleAvailable = false;
+			// [-pi,pi)
+			double cr = rollCMD >= M_PI ? rollCMD-2*M_PI : (rollCMD < -M_PI ? rollCMD+2*M_PI : rollCMD);
+			double cp = pitchCMD >= M_PI ? pitchCMD-2*M_PI : (pitchCMD < -M_PI ? pitchCMD+2*M_PI : pitchCMD);
+			double cy = yawCMD >= M_PI ? yawCMD-2*M_PI : (yawCMD < -M_PI ? yawCMD+2*M_PI : yawCMD);
+
+			double dr = cr  - DEG2RAD(gimbalAngle.vector.x);
+			double dp = cp - DEG2RAD(gimbalAngle.vector.y);
+			double dy = cy   - DEG2RAD(gimbalAngle.vector.z);
+			speedCmd.vector.x = dr;
+			speedCmd.vector.y = dp;
+			speedCmd.vector.z = dy;
+
+			gimbalSpeedPub.publish(speedCmd);
+
+			// Reset Commands to zero
+			speedCmd.vector.x = 0;
+			speedCmd.vector.y = 0;
+			speedCmd.vector.z = 0;
+
 		}
 		else
 			gimbalSpeedPub.publish(speedCmd);
 	}
+
+	angleAvailable = pointAvailable = false;
 }
 
 void dji_gimbal::setGimbalAngle(double roll, double pitch, double yaw)

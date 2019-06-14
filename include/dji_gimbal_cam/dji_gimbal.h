@@ -69,6 +69,7 @@ private:
 
 	// Callbacks
 	void gimbalAngleCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
+	void gimbalAngleCMDCallback(const geometry_msgs::Vector3::ConstPtr& msg);
 	void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
 	void cameraInfoCallback(const sensor_msgs::CameraInfo& msg);
 	void pointCallback(const geometry_msgs::Vector3::ConstPtr& msg);
@@ -98,7 +99,7 @@ private:
 	bool angleAvailable;
 	std::string cameraInfoTopic;
 	std::string pointTopic;
-	std::string gimbalCMDTopic;
+	std::string gimbalCmdTopic;
 	int yawAxis, pitchAxis, rollAxis, resetButton, faceDownButton, toggleButton;
 	geometry_msgs::Vector3Stamped gimbalAngle;
 	geometry_msgs::Vector3Stamped speedCmd;
