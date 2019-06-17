@@ -134,8 +134,8 @@ void dji_gimbal::publishGimbalCmd()
 		else
 			gimbalSpeedPub.publish(speedCmd);
 	}
-
-	angleAvailable = pointAvailable = false;
+	pointAvailable = false;
+	angleAvailable = false;
 }
 
 void dji_gimbal::setGimbalAngle(double roll, double pitch, double yaw)
